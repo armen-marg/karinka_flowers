@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karinka Flowers</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blush: #F2D6D3;
+      --rose: #C9707A;
+      --deep: #7A3040;
+      --sage: #8BA888;
+      --cream: #FAF6F2;
+      --ink: #2B1A1F;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--cream);
+      font-family: 'Raleway', sans-serif;
+      color: var(--ink);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ───────── ambient floating blobs ───────── */
+    .bg-ambient {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+    }
+
+    .blob-1 {
+      width: 420px;
+      height: 420px;
+      top: -130px;
+      left: -110px;
+      opacity: .45;
+      background: radial-gradient(circle, var(--blush), transparent 70%);
+      animation: drift1 22s ease-in-out infinite alternate;
+    }
+
+    .blob-2 {
+      width: 380px;
+      height: 380px;
+      bottom: -150px;
+      right: -90px;
+      opacity: .3;
+      background: radial-gradient(circle, var(--sage), transparent 70%);
+      animation: drift2 26s ease-in-out infinite alternate;
+    }
+
+    .blob-3 {
+      width: 260px;
+      height: 260px;
+      top: 38%;
+      right: 8%;
+      opacity: .22;
+      background: radial-gradient(circle, var(--rose), transparent 70%);
+      animation: drift3 19s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 {
+      to {
+        transform: translate(40px, 30px) scale(1.08);
+      }
+    }
+
+    @keyframes drift2 {
+      to {
+        transform: translate(-30px, -25px) scale(1.05);
+      }
+    }
+
+    @keyframes drift3 {
+      to {
+        transform: translate(-20px, 30px) scale(.96);
+      }
+    }
+
+    /* ───────── hero / logo mark ───────── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .k-wrap {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      animation: heroIn .8s cubic-bezier(.22, 1, .36, 1) .15s forwards;
+    }
+
+    @keyframes heroIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* blossoming petal ring around the K */
+    .petals {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .petal {
+      position: absolute;
+      width: 28px;
+      height: 56px;
+      background: radial-gradient(ellipse at 50% 80%, var(--blush) 30%, rgba(242, 214, 211, 0) 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      opacity: 0;
+      animation: petalBlossom .7s ease forwards;
+    }
+
+    .petal:nth-child(1) {
+      --deg: 0deg;
+      animation-delay: .35s;
+    }
+
+    .petal:nth-child(2) {
+      --deg: 45deg;
+      animation-delay: .45s;
+    }
+
+    .petal:nth-child(3) {
+      --deg: 90deg;
+      animation-delay: .55s;
+    }
+
+    .petal:nth-child(4) {
+      --deg: 135deg;
+      animation-delay: .65s;
+    }
+
+    .petal:nth-child(5) {
+      --deg: 180deg;
+      animation-delay: .75s;
+    }
+
+    .petal:nth-child(6) {
+      --deg: 225deg;
+      animation-delay: .85s;
+    }
+
+    .petal:nth-child(7) {
+      --deg: 270deg;
+      animation-delay: .95s;
+    }
+
+    .petal:nth-child(8) {
+      --deg: 315deg;
+      animation-delay: 1.05s;
+    }
+
+    @keyframes petalBlossom {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(.3);
+      }
+
+      60% {
+        opacity: .9;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(1.08);
+      }
+
+      100% {
+        opacity: .75;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(1);
+      }
+    }
+
+    .petals {
+      animation: spinRing 14s linear infinite;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes spinRing {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .sparkles {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .spark {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rose);
+      opacity: 0;
+      animation: sparkle 1.8s ease-in-out infinite;
+    }
+
+    .spark:nth-child(1) {
+      top: 10%;
+      left: 50%;
+      animation-delay: .5s;
+    }
+
+    .spark:nth-child(2) {
+      top: 25%;
+      left: 82%;
+      animation-delay: .9s;
+      background: var(--sage);
+    }
+
+    .spark:nth-child(3) {
+      top: 72%;
+      left: 88%;
+      animation-delay: 1.3s;
+    }
+
+    .spark:nth-child(4) {
+      top: 85%;
+      left: 50%;
+      animation-delay: .7s;
+      background: var(--deep);
+    }
+
+    .spark:nth-child(5) {
+      top: 72%;
+      left: 12%;
+      animation-delay: 1.1s;
+      background: var(--sage);
+    }
+
+    .spark:nth-child(6) {
+      top: 25%;
+      left: 18%;
+      animation-delay: 1.7s;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 0;
+        transform: scale(.4);
+      }
+
+      40% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(.4) translateY(-8px);
+      }
+    }
+
+    .k-glow {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 112, 122, 0.22) 0%, rgba(242, 214, 211, 0) 70%);
+      animation: pulseGlow 2.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .7;
+      }
+
+      50% {
+        transform: scale(1.16);
+        opacity: 1;
+      }
+    }
+
+    .k-ring {
+      position: absolute;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201, 112, 122, 0.35);
+      animation: ringRotate 10s linear infinite;
+    }
+
+    @keyframes ringRotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .k-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 84px;
+      font-weight: 300;
+      letter-spacing: -4px;
+      line-height: 1;
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(145deg, var(--deep) 30%, var(--rose) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+    }
+
+    .brand {
+      text-align: center;
+      margin-top: 6px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp .7s ease .55s forwards;
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 27px;
+      font-weight: 400;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .brand-name em {
+      font-style: italic;
+      color: var(--rose);
+      font-weight: 400;
+    }
+
+    .brand-tag {
+      font-size: 10.5px;
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-top: 4px;
+    }
+
+    .welcome {
+      text-align: center;
+      max-width: 380px;
+      margin-top: 38px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp .7s ease .85s forwards;
+    }
+
+    .welcome h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--deep);
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+      opacity: .68;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ───────── action row: buttons + stem divider ───────── */
+    .button-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 188px;
+      padding: 16px 36px;
+      border-radius: 999px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--deep);
+      border: 1.5px solid rgba(122, 48, 64, .32);
+      animation: fadeUp .6s ease 1.05s forwards;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(122, 48, 64, .06);
+      border-color: var(--deep);
+      transform: translateY(-2px);
+    }
+
+    .btn-fill {
+      background: linear-gradient(135deg, var(--deep), var(--rose));
+      color: var(--cream);
+      box-shadow: 0 14px 30px -14px rgba(122, 48, 64, .5);
+      animation: fadeUp .6s ease 1.15s forwards;
+    }
+
+    .btn-fill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px -12px rgba(122, 48, 64, .55);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--rose);
+      outline-offset: 4px;
+    }
+
+    /* signature stem + bloom, sits between the two buttons */
+    .stem-divider {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .stem-line {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      transform: translateX(-50%) scaleY(0);
+      transform-origin: top center;
+      background: linear-gradient(180deg, var(--sage), var(--rose));
+      border-radius: 2px;
+      box-shadow: 0 0 14px rgba(201, 112, 122, .25);
+      animation: growStem .8s ease 1.35s forwards;
+    }
+
+    @keyframes growStem {
+      to {
+        transform: translateX(-50%) scaleY(1);
+      }
+    }
+
+    .stem-line::before,
+    .stem-line::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 7px;
+      background: var(--sage);
+      border-radius: 50%;
+      opacity: 0;
+      animation: leafFade .5s ease forwards;
+    }
+
+    .stem-line::before {
+      top: 26%;
+      left: -13px;
+      transform: rotate(-30deg);
+      animation-delay: 1.95s;
+    }
+
+    .stem-line::after {
+      top: 64%;
+      left: -1px;
+      transform: rotate(30deg) scaleX(-1);
+      animation-delay: 2.1s;
+    }
+
+    @keyframes leafFade {
+      to {
+        opacity: .85;
+      }
+    }
+
+    .stem-bloom {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 26px;
+      height: 26px;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      animation: bloomPop .55s cubic-bezier(.34, 1.56, .64, 1) 1.75s forwards;
+    }
+
+    @keyframes bloomPop {
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .stem-bloom::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--rose);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 7px rgba(201, 112, 122, .6);
+    }
+
+    .petal-mini {
+      position: absolute;
+      width: 9px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      background: radial-gradient(ellipse at 50% 80%, var(--blush) 35%, rgba(242, 214, 211, 0) 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+
+    .petal-mini.p1 {
+      transform: translate(-50%, -100%) rotate(0deg);
+    }
+
+    .petal-mini.p2 {
+      transform: translate(-50%, -100%) rotate(72deg);
+    }
+
+    .petal-mini.p3 {
+      transform: translate(-50%, -100%) rotate(144deg);
+    }
+
+    .petal-mini.p4 {
+      transform: translate(-50%, -100%) rotate(216deg);
+    }
+
+    .petal-mini.p5 {
+      transform: translate(-50%, -100%) rotate(288deg);
+    }
+
+    /* ───────── mobile: stack buttons, divider rotates to horizontal ───────── */
+    @media (max-width: 600px) {
+      .button-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .stem-divider {
+        width: 100%;
+        max-width: 280px;
+        height: 56px;
+      }
+
+      .stem-line {
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        transform: translateY(-50%) scaleX(0);
+        transform-origin: left center;
+        background: linear-gradient(90deg, var(--sage), var(--rose));
+      }
+
+      @keyframes growStem {
+        to {
+          transform: translateY(-50%) scaleX(1);
+        }
+      }
+
+      .stem-line::before {
+        top: -12px;
+        left: 28%;
+        transform: rotate(60deg);
+      }
+
+      .stem-line::after {
+        top: 2px;
+        left: 62%;
+        transform: rotate(-60deg) scaleX(-1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-ambient" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
+  <div class="hero">
+
+    <div class="k-wrap" aria-hidden="true">
+      <div class="petals">
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+      </div>
+      <div class="sparkles">
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+      </div>
+      <div class="k-glow"></div>
+      <div class="k-ring"></div>
+      <span class="k-letter">K</span>
+    </div>
+
+    <div class="brand">
+      <div class="brand-name"><em>Karinka</em> Flowers</div>
+      <div class="brand-tag">floral boutique</div>
+    </div>
+
+    <div class="welcome">
+      <h1>Добро пожаловать</h1>
+      <p>Войдите в свой аккаунт или создайте новый, чтобы собирать букеты и оформлять заказы</p>
+    </div>
+
+    <div class="button-row">
+      <a href="/login" class="btn btn-ghost">Войти</a>
+
+      <div class="stem-divider" aria-hidden="true">
+        <span class="stem-line"></span>
+        <span class="stem-bloom">
+          <span class="petal-mini p1"></span>
+          <span class="petal-mini p2"></span>
+          <span class="petal-mini p3"></span>
+          <span class="petal-mini p4"></span>
+          <span class="petal-mini p5"></span>
+        </span>
+      </div>
+
+      <a href="/register" class="btn btn-fill">Регистрация</a>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

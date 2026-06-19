@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Регистрация — Karinka Flowers</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Raleway:wght@200;300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blush: #F2D6D3;
+            --rose: #C9707A;
+            --deep: #7A3040;
+            --sage: #8BA888;
+            --cream: #FAF6F2;
+            --ink: #2B1A1F;
+            --card: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(122, 48, 64, 0.12);
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            background: var(--cream);
+            font-family: 'Raleway', sans-serif;
+            color: var(--ink);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ───────── ambient floating blobs ───────── */
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+        }
+
+        .blob-1 {
+            width: 420px;
+            height: 420px;
+            top: -130px;
+            left: -110px;
+            opacity: .45;
+            background: radial-gradient(circle, var(--blush), transparent 70%);
+            animation: drift1 22s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 380px;
+            height: 380px;
+            bottom: -150px;
+            right: -90px;
+            opacity: .3;
+            background: radial-gradient(circle, var(--sage), transparent 70%);
+            animation: drift2 26s ease-in-out infinite alternate;
+        }
+
+        .blob-3 {
+            width: 260px;
+            height: 260px;
+            top: 38%;
+            right: 8%;
+            opacity: .22;
+            background: radial-gradient(circle, var(--rose), transparent 70%);
+            animation: drift3 19s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift1 {
+            to {
+                transform: translate(40px, 30px) scale(1.08);
+            }
+        }
+
+        @keyframes drift2 {
+            to {
+                transform: translate(-30px, -25px) scale(1.05);
+            }
+        }
+
+        @keyframes drift3 {
+            to {
+                transform: translate(-20px, 30px) scale(.96);
+            }
+        }
+
+        /* ───────── brand header ───────── */
+        .brand-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeDown .7s ease forwards;
+        }
+
+        @keyframes fadeDown {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mini-k {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--deep);
+            background: radial-gradient(circle, rgba(242, 214, 211, .9), rgba(250, 246, 242, .4));
+            box-shadow: 0 0 0 1px rgba(201, 112, 122, .25), 0 10px 24px -10px rgba(122, 48, 64, .35);
+            transition: transform .35s ease, box-shadow .35s ease;
+        }
+
+        .brand-link:hover .mini-k {
+            transform: rotate(8deg) scale(1.06);
+            box-shadow: 0 0 0 1px rgba(201, 112, 122, .4), 0 14px 28px -8px rgba(122, 48, 64, .45);
+        }
+
+        .brand-link:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 6px;
+            border-radius: 14px;
+        }
+
+        .brand-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .brand-text em {
+            font-style: italic;
+            color: var(--rose);
+            font-weight: 400;
+        }
+
+        .brand-tag {
+            font-size: 9.5px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--sage);
+            font-weight: 300;
+        }
+
+        /* ───────── card ───────── */
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--card-border);
+            border-radius: 8px 28px 8px 28px;
+            padding: 46px 42px;
+            box-shadow: 0 24px 60px -32px rgba(122, 48, 64, .4);
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: cardIn .8s cubic-bezier(.22, 1, .36, 1) .2s forwards;
+        }
+
+        @keyframes cardIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 29px;
+            font-weight: 400;
+            color: var(--deep);
+            margin-bottom: 6px;
+        }
+
+        .auth-card .subtitle {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--ink);
+            opacity: .62;
+            margin-bottom: 30px;
+        }
+
+        /* ───────── form fields ───────── */
+        .field {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--deep);
+            opacity: .62;
+            margin-bottom: 7px;
+        }
+
+        .field input {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid rgba(122, 48, 64, .16);
+            background: transparent;
+            padding: 6px 2px 10px;
+            font: inherit;
+            font-size: 15px;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .field input::placeholder {
+            color: rgba(43, 26, 31, .32);
+        }
+
+        .field .underline {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 0;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--rose), var(--deep));
+            transition: width .35s ease;
+        }
+
+        .field input:focus~.underline {
+            width: 100%;
+        }
+
+        .btn-submit {
+            position: relative;
+            width: 100%;
+            margin-top: 6px;
+            padding: 15px 0;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--deep), var(--rose));
+            color: var(--cream);
+            font-family: 'Raleway', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 14px 30px -14px rgba(122, 48, 64, .5);
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px -12px rgba(122, 48, 64, .55);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 4px;
+        }
+
+        .btn-submit.loading {
+            cursor: default;
+            opacity: .85;
+        }
+
+        .btn-submit .btn-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, .4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        .btn-submit.loading .btn-label {
+            display: none;
+        }
+
+        .btn-submit.loading .btn-spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .form-note {
+            margin-top: 14px;
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--deep);
+            opacity: 0;
+            min-height: 16px;
+            transition: opacity .4s ease;
+        }
+
+        .form-note.show {
+            opacity: .85;
+        }
+
+        .switch-line {
+            margin-top: 26px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--ink);
+            opacity: .75;
+        }
+
+        .switch-line a {
+            color: var(--rose);
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(201, 112, 122, .5);
+        }
+
+        .switch-line a:hover {
+            border-bottom-style: solid;
+        }
+
+        .switch-line a:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 36px 26px;
+                border-radius: 8px 22px 8px 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+
+        .error-box {
+            margin-top: 6px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(201, 112, 122, 0.12);
+            border: 1px solid rgba(201, 112, 122, 0.35);
+            color: #7A3040;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(6px);
+            animation: errorIn 0.25s ease-out;
+        }
+
+        @keyframes errorIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-ambient" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="blob blob-3"></span>
+    </div>
+
+    <a href="/start" class="brand-link" aria-label="Karinka Flowers — на главную">
+        <span class="mini-k">K</span>
+        <span class="brand-text">Karinka <em>Flowers</em></span>
+        <span class="brand-tag">floral boutique</span>
+    </a>
+
+    <section class="auth-card" aria-labelledby="register-heading">
+        <h1 id="register-heading">Новый росток</h1>
+        <p class="subtitle">Создайте аккаунт, чтобы оформлять заказы быстрее</p>
+
+        <form action="/register" method="post" novalidate>
+            <div class="field">
+                {% if error %}
+                <div class="error-box">
+                    {{ error }}
+                </div>
+                {% endif %}
+                <label for="register-name">Имя</label>
+                <input type="text" id="register-name" name="name" placeholder="Как вас зовут" autocomplete="name" required>
+                <span class="underline" aria-hidden="true"></span>
+            </div>
+            <div class="field">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" name="email" placeholder="you@example.com" autocomplete="email"
+                    required>
+                <span class="underline" aria-hidden="true"></span>
+            </div>
+            <div class="field">
+                <label for="register-password">Пароль</label>
+                <input type="password" id="register-password" name="password" placeholder="••••••••"
+                    autocomplete="new-password" required>
+                <span class="underline" aria-hidden="true"></span>
+            </div>
+            <div class="field">
+                <label for="register-confirm">Повторите пароль</label>
+                <input type="password" id="register-confirm" name="confirm_password" placeholder="••••••••"
+                    autocomplete="new-password" required>
+                <span class="underline" aria-hidden="true"></span>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <span class="btn-label">Зарегистрироваться</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+            <p class="form-note" aria-live="polite"></p>
+        </form>
+
+        <p class="switch-line">Уже с нами? <a href="/login">Войти</a></p>
+    </section>
+
+    <script>
+        
+    </script>
+
+</body>
+
+</html>

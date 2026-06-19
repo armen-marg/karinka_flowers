@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karinka Flowers</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Raleway:wght@200;300&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blush: #F2D6D3;
+      --rose: #C9707A;
+      --deep: #7A3040;
+      --sage: #8BA888;
+      --cream: #FAF6F2;
+      --ink: #2B1A1F;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    /* ── Splash wrapper ── */
+    #splash {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    /* ── Petals ring ── */
+    .petals {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translateY(-43px);
+      pointer-events: none;
+    }
+
+    .petal {
+      position: absolute;
+      width: 28px;
+      height: 56px;
+      background: radial-gradient(ellipse at 50% 80%, var(--blush) 30%, rgba(242, 214, 211, 0) 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      opacity: 0;
+      animation: petalBlossom 0.7s ease forwards;
+    }
+
+    /* 8 petals evenly spaced */
+    .petal:nth-child(1) {
+      --deg: 0deg;
+      animation-delay: 0.05s;
+    }
+
+    .petal:nth-child(2) {
+      --deg: 45deg;
+      animation-delay: 0.15s;
+    }
+
+    .petal:nth-child(3) {
+      --deg: 90deg;
+      animation-delay: 0.25s;
+    }
+
+    .petal:nth-child(4) {
+      --deg: 135deg;
+      animation-delay: 0.35s;
+    }
+
+    .petal:nth-child(5) {
+      --deg: 180deg;
+      animation-delay: 0.45s;
+    }
+
+    .petal:nth-child(6) {
+      --deg: 225deg;
+      animation-delay: 0.55s;
+    }
+
+    .petal:nth-child(7) {
+      --deg: 270deg;
+      animation-delay: 0.65s;
+    }
+
+    .petal:nth-child(8) {
+      --deg: 315deg;
+      animation-delay: 0.75s;
+    }
+
+    @keyframes petalBlossom {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(0.3);
+      }
+
+      60% {
+        opacity: 0.9;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(1.08);
+      }
+
+      100% {
+        opacity: 0.75;
+        transform: translate(-50%, -100%) rotate(var(--deg)) scaleY(1);
+      }
+    }
+
+    /* slow rotation of the petal ring */
+    .petals {
+      animation: spinRing 12s linear infinite;
+      animation-delay: 0.9s;
+    }
+
+    @keyframes spinRing {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* ── Tiny sparkles ── */
+    .sparkles {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .spark {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rose);
+      opacity: 0;
+      animation: sparkle 1.8s ease-in-out infinite;
+    }
+
+    .spark:nth-child(1) {
+      top: 10%;
+      left: 50%;
+      animation-delay: 0.2s;
+    }
+
+    .spark:nth-child(2) {
+      top: 25%;
+      left: 82%;
+      animation-delay: 0.6s;
+      background: var(--sage);
+    }
+
+    .spark:nth-child(3) {
+      top: 72%;
+      left: 88%;
+      animation-delay: 1.0s;
+    }
+
+    .spark:nth-child(4) {
+      top: 85%;
+      left: 50%;
+      animation-delay: 0.4s;
+      background: var(--deep);
+    }
+
+    .spark:nth-child(5) {
+      top: 72%;
+      left: 12%;
+      animation-delay: 0.8s;
+      background: var(--sage);
+    }
+
+    .spark:nth-child(6) {
+      top: 25%;
+      left: 18%;
+      animation-delay: 1.4s;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 0;
+        transform: scale(0.4);
+      }
+
+      40% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(0.4) translateY(-8px);
+      }
+    }
+
+    /* ── Letter K ── */
+    .k-wrap {
+      position: relative;
+      z-index: 10;
+      width: 130px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* glowing circle behind K */
+    .k-glow {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 112, 122, 0.22) 0%, rgba(242, 214, 211, 0) 70%);
+      animation: pulseGlow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: scale(1.18);
+        opacity: 1;
+      }
+    }
+
+    /* thin decorative ring */
+    .k-ring {
+      position: absolute;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201, 112, 122, 0.35);
+      animation: ringRotate 8s linear infinite;
+    }
+
+    @keyframes ringRotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .k-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 88px;
+      font-weight: 300;
+      color: var(--deep);
+      letter-spacing: -4px;
+      line-height: 1;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(14px) scale(0.88);
+      animation: letterRise 0.9s cubic-bezier(.22, 1, .36, 1) 0.3s forwards;
+      /* gradient fill */
+      background: linear-gradient(145deg, var(--deep) 30%, var(--rose) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+    }
+
+    @keyframes letterRise {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ── Brand name ── */
+    .brand {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeUp 0.7s ease 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 6px;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+
+    .brand-name em {
+      font-style: italic;
+      color: var(--rose);
+      font-weight: 300;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 200;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-top: 4px;
+    }
+
+    /* ── Thin underline with growing animation ── */
+    .divider {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), transparent);
+      animation: growLine 0.8s ease 1.4s forwards;
+      margin-top: 2px;
+    }
+
+    @keyframes growLine {
+      to {
+        width: var(--divider-width, 180px);
+      }
+    }
+
+    /* ── Exit fade ── */
+    #splash.fade-out {
+      animation: splashExit 0.5s ease forwards;
+    }
+
+    @keyframes splashExit {
+      to {
+        opacity: 0;
+        transform: scale(1.04);
+      }
+    }
+
+    /* reduced-motion respect */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="splash">
+
+    <!-- Decorative petal ring -->
+    <div class="petals" aria-hidden="true">
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+    </div>
+
+    <!-- Sparkle dots -->
+    <div class="sparkles" aria-hidden="true">
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+    </div>
+
+    <!-- Letter K -->
+    <div class="k-wrap">
+      <div class="k-glow"></div>
+      <div class="k-ring"></div>
+      <span class="k-letter">K</span>
+    </div>
+
+    <!-- Brand name -->
+    <div class="brand">
+      <div class="brand-name"><em>Karinka</em> Flowers</div>
+      <div class="divider"></div>
+      <div class="brand-sub">floral boutique</div>
+    </div>
+
+  </div>
+
+  <script>
+    // подгоняем длину линии под ширину текста "Karinka Flowers"
+    const brandName = document.querySelector('.brand-name');
+    const divider = document.querySelector('.divider');
+    divider.style.setProperty('--divider-width', brandName.offsetWidth + 'px');
+
+    const TOTAL_DURATION = 3000;
+    const FADE_DURATION = 500;
+
+    setTimeout(() => {
+      const splash = document.getElementById('splash');
+      splash.classList.add('fade-out');
+
+      setTimeout(() => {
+        window.location.href = '/enter';
+      }, FADE_DURATION);
+
+    }, TOTAL_DURATION - FADE_DURATION);
+  </script>
+
+</body>
+
+</html>

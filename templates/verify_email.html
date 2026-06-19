@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Подтверждение почты — Karinka Flowers</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Raleway:wght@200;300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blush: #F2D6D3;
+            --rose: #C9707A;
+            --deep: #7A3040;
+            --sage: #8BA888;
+            --cream: #FAF6F2;
+            --ink: #2B1A1F;
+            --card: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(122, 48, 64, 0.12);
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            background: var(--cream);
+            font-family: 'Raleway', sans-serif;
+            color: var(--ink);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ───────── ambient floating blobs ───────── */
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+        }
+
+        .blob-1 {
+            width: 420px;
+            height: 420px;
+            top: -130px;
+            left: -110px;
+            opacity: .45;
+            background: radial-gradient(circle, var(--blush), transparent 70%);
+            animation: drift1 22s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 380px;
+            height: 380px;
+            bottom: -150px;
+            right: -90px;
+            opacity: .3;
+            background: radial-gradient(circle, var(--sage), transparent 70%);
+            animation: drift2 26s ease-in-out infinite alternate;
+        }
+
+        .blob-3 {
+            width: 260px;
+            height: 260px;
+            top: 38%;
+            right: 8%;
+            opacity: .22;
+            background: radial-gradient(circle, var(--rose), transparent 70%);
+            animation: drift3 19s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift1 {
+            to {
+                transform: translate(40px, 30px) scale(1.08);
+            }
+        }
+
+        @keyframes drift2 {
+            to {
+                transform: translate(-30px, -25px) scale(1.05);
+            }
+        }
+
+        @keyframes drift3 {
+            to {
+                transform: translate(-20px, 30px) scale(.96);
+            }
+        }
+
+        /* ───────── brand header ───────── */
+        .brand-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeDown .7s ease forwards;
+        }
+
+        @keyframes fadeDown {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mini-k {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--deep);
+            background: radial-gradient(circle, rgba(242, 214, 211, .9), rgba(250, 246, 242, .4));
+            box-shadow: 0 0 0 1px rgba(201, 112, 122, .25), 0 10px 24px -10px rgba(122, 48, 64, .35);
+            transition: transform .35s ease, box-shadow .35s ease;
+        }
+
+        .brand-link:hover .mini-k {
+            transform: rotate(8deg) scale(1.06);
+            box-shadow: 0 0 0 1px rgba(201, 112, 122, .4), 0 14px 28px -8px rgba(122, 48, 64, .45);
+        }
+
+        .brand-link:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 6px;
+            border-radius: 14px;
+        }
+
+        .brand-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .brand-text em {
+            font-style: italic;
+            color: var(--rose);
+            font-weight: 400;
+        }
+
+        .brand-tag {
+            font-size: 9.5px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--sage);
+            font-weight: 300;
+        }
+
+        /* ───────── card ───────── */
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--card-border);
+            border-radius: 8px 28px 8px 28px;
+            padding: 46px 42px;
+            box-shadow: 0 24px 60px -32px rgba(122, 48, 64, .4);
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: cardIn .8s cubic-bezier(.22, 1, .36, 1) .2s forwards;
+        }
+
+        @keyframes cardIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 29px;
+            font-weight: 400;
+            color: var(--deep);
+            margin-bottom: 6px;
+        }
+
+        .auth-card .subtitle {
+            font-size: 13px;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--ink);
+            opacity: .62;
+            margin-bottom: 8px;
+        }
+
+        .auth-card .subtitle strong {
+            font-weight: 500;
+            opacity: 1;
+            color: var(--deep);
+        }
+
+        /* ───────── notices ───────── */
+        .notice {
+            margin-bottom: 22px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(6px);
+            animation: errorIn 0.25s ease-out;
+        }
+
+        .notice.error {
+            background: rgba(201, 112, 122, 0.12);
+            border: 1px solid rgba(201, 112, 122, 0.35);
+            color: #7A3040;
+        }
+
+        .notice.info {
+            background: rgba(139, 168, 136, 0.14);
+            border: 1px solid rgba(139, 168, 136, 0.4);
+            color: #4D6B4A;
+        }
+
+        @keyframes errorIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ───────── code input row ───────── */
+        .code-field {
+            margin: 26px 0 6px;
+        }
+
+        .code-field>label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--deep);
+            opacity: .62;
+            margin-bottom: 12px;
+        }
+
+        .code-boxes {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .code-boxes input {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.55);
+            border: 1.5px solid rgba(122, 48, 64, 0.16);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color .25s ease, box-shadow .25s ease, transform .15s ease;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .code-boxes input::-webkit-outer-spin-button,
+        .code-boxes input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        .code-boxes input:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 3px rgba(201, 112, 122, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .code-boxes input.filled {
+            border-color: rgba(122, 48, 64, 0.3);
+        }
+
+        .code-boxes.shake {
+            animation: shake .4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-7px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(3px);
+            }
+        }
+
+        /* ───────── buttons ───────── */
+        .btn-submit {
+            position: relative;
+            width: 100%;
+            margin-top: 24px;
+            padding: 15px 0;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--deep), var(--rose));
+            color: var(--cream);
+            font-family: 'Raleway', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 14px 30px -14px rgba(122, 48, 64, .5);
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px -12px rgba(122, 48, 64, .55);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 4px;
+        }
+
+        .btn-submit:disabled {
+            cursor: default;
+            opacity: .5;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-submit.loading {
+            cursor: default;
+            opacity: .85;
+        }
+
+        .btn-submit .btn-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, .4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        .btn-submit.loading .btn-label {
+            display: none;
+        }
+
+        .btn-submit.loading .btn-spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .resend-line {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--ink);
+            opacity: .75;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            font: inherit;
+            font-weight: 500;
+            color: var(--rose);
+            cursor: pointer;
+            padding: 0;
+            border-bottom: 1px dashed rgba(201, 112, 122, .5);
+        }
+
+        .resend-btn:hover:not(:disabled) {
+            border-bottom-style: solid;
+        }
+
+        .resend-btn:disabled {
+            color: var(--ink);
+            opacity: .45;
+            cursor: default;
+            border-bottom: none;
+        }
+
+        .resend-btn:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        .switch-line {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--ink);
+            opacity: .75;
+        }
+
+        .switch-line a {
+            color: var(--rose);
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(201, 112, 122, .5);
+        }
+
+        .switch-line a:hover {
+            border-bottom-style: solid;
+        }
+
+        .switch-line a:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 36px 22px;
+                border-radius: 8px 22px 8px 22px;
+            }
+
+            .code-boxes {
+                gap: 7px;
+            }
+
+            .code-boxes input {
+                font-size: 21px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-ambient" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="blob blob-3"></span>
+    </div>
+
+    <a href="/start" class="brand-link" aria-label="Karinka Flowers — на главную">
+        <span class="mini-k">K</span>
+        <span class="brand-text">Karinka <em>Flowers</em></span>
+        <span class="brand-tag">floral boutique</span>
+    </a>
+
+    <section class="auth-card" aria-labelledby="verify-heading">
+        <h1 id="verify-heading">Письмо в пути</h1>
+        <p class="subtitle">Мы отправили шестизначный код на <strong>{{ email }}</strong></p>
+
+        {% if error %}
+        <div class="notice error" id="server-error">{{ error }}</div>
+        {% endif %}
+        {% if info %}
+        <div class="notice info">{{ info }}</div>
+        {% endif %}
+
+        <form id="verify-form" action="/verify-email" method="post" novalidate>
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="code" id="code-value">
+
+            <div class="code-field">
+                <label>Код подтверждения</label>
+                <div class="code-boxes" id="code-boxes">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 1">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 2">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 3">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 4">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 5">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра 6">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">
+                <span class="btn-label">Подтвердить</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+        </form>
+
+        <p class="resend-line">
+            Не пришло письмо?
+            <button type="button" class="resend-btn" id="resend-btn">Отправить код повторно</button>
+        </p>
+
+        <p class="switch-line">Ошиблись адресом? <a href="/register">Начать заново</a></p>
+    </section>
+
+    <form id="resend-form" action="/verify-email/resend" method="post" style="display:none">
+        <input type="hidden" name="email" value="{{ email }}">
+    </form>
+
+    <script>
+        (function () {
+            const boxes = Array.from(document.querySelectorAll('#code-boxes input'));
+            const hiddenCode = document.getElementById('code-value');
+            const codeWrap = document.getElementById('code-boxes');
+            const form = document.getElementById('verify-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const resendBtn = document.getElementById('resend-btn');
+            const resendForm = document.getElementById('resend-form');
+
+            // ---- code boxes behaviour ----
+            function syncHiddenValue() {
+                hiddenCode.value = boxes.map(b => b.value).join('');
+            }
+
+            function focusBox(index) {
+                if (boxes[index]) boxes[index].focus();
+            }
+
+            boxes.forEach((box, i) => {
+                box.addEventListener('input', () => {
+                    box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
+                    box.classList.toggle('filled', box.value !== '');
+                    syncHiddenValue();
+                    if (box.value && i < boxes.length - 1) {
+                        focusBox(i + 1);
+                    }
+                });
+
+                box.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !box.value && i > 0) {
+                        focusBox(i - 1);
+                    }
+                    if (e.key === 'ArrowLeft' && i > 0) {
+                        e.preventDefault();
+                        focusBox(i - 1);
+                    }
+                    if (e.key === 'ArrowRight' && i < boxes.length - 1) {
+                        e.preventDefault();
+                        focusBox(i + 1);
+                    }
+                });
+
+                box.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const digits = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').slice(0, boxes.length);
+                    digits.split('').forEach((digit, idx) => {
+                        if (boxes[idx]) {
+                            boxes[idx].value = digit;
+                            boxes[idx].classList.add('filled');
+                        }
+                    });
+                    syncHiddenValue();
+                    focusBox(Math.min(digits.length, boxes.length - 1));
+                });
+            });
+
+            focusBox(0);
+
+            // ---- submit state ----
+            form.addEventListener('submit', (e) => {
+                syncHiddenValue();
+                if (hiddenCode.value.length < boxes.length) {
+                    e.preventDefault();
+                    codeWrap.classList.remove('shake');
+                    void codeWrap.offsetWidth; // restart animation
+                    codeWrap.classList.add('shake');
+                    focusBox(hiddenCode.value.length);
+                    return;
+                }
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            });
+
+            // ---- shake on server-side error ----
+            if (document.getElementById('server-error')) {
+                codeWrap.classList.add('shake');
+            }
+
+            // ---- resend cooldown ----
+            const COOLDOWN_SECONDS = 30;
+            let remaining = 0;
+            let timerId = null;
+
+            function tick() {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    clearInterval(timerId);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Отправить код повторно';
+                } else {
+                    resendBtn.textContent = `Повторно через ${remaining} с`;
+                }
+            }
+
+            function startCooldown() {
+                remaining = COOLDOWN_SECONDS;
+                resendBtn.disabled = true;
+                resendBtn.textContent = `Повторно через ${remaining} с`;
+                timerId = setInterval(tick, 1000);
+            }
+
+            resendBtn.addEventListener('click', () => {
+                if (resendBtn.disabled) return;
+                resendBtn.disabled = true;
+                resendBtn.textContent = 'Отправляем…';
+                resendForm.requestSubmit ? resendForm.requestSubmit() : resendForm.submit();
+            });
+
+            // start the cooldown right away, since a code was just sent on page load
+            startCooldown();
+        })();
+    </script>
+
+</body>
+
+</html>
