@@ -1,7 +1,11 @@
 from sqlalchemy.ext.asyncio import create_async_engine , async_sessionmaker , AsyncSession
+import os 
+from dotenv import load_dotenv 
+
+load_dotenv()
 
 engine = create_async_engine(
-    "mysql+aiomysql://root:Hl3trt93!@localhost/karinka_db"
+    os.getenv("DATABASE"), echo= True
 )
 
 SessionLocal = async_sessionmaker(
