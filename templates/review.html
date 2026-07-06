@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Отзывы — Karinka Flowers</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #FAF6F2;
+      --rose: #C9707A;
+      --deep: #7A3040;
+      --sage: #8BA888;
+      --ink: #2B1A1F;
+      --card: #fff;
+      --line: rgba(122, 48, 64, .10);
+      --shadow: 0 24px 60px rgba(43, 26, 31, .08);
+      --shadow-soft: 0 10px 22px rgba(43, 26, 31, .05);
+      --gold: #E0A84A;
+      --danger: #B3433F;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(201, 112, 122, .14), transparent 32%),
+        radial-gradient(circle at top right, rgba(139, 168, 136, .14), transparent 28%),
+        linear-gradient(180deg, #fff 0%, var(--cream) 100%);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      pointer-events: none;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: .40;
+      z-index: 0;
+    }
+
+    body::before {
+      width: 300px;
+      height: 300px;
+      left: -110px;
+      top: 16vh;
+      background: radial-gradient(circle, rgba(201, 112, 122, .18), transparent 68%);
+      animation: float 9s ease-in-out infinite;
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      bottom: 14vh;
+      background: radial-gradient(circle, rgba(139, 168, 136, .18), transparent 68%);
+      animation: float 11s ease-in-out infinite reverse;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 28px));
+      margin: 18px auto 24px;
+      background: rgba(255, 255, 255, .76);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 26px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .48);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, var(--deep), var(--rose));
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 25px;
+      box-shadow: 0 14px 24px rgba(122, 48, 64, .22);
+    }
+
+    .brand-text {
+      line-height: 1.05;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--deep);
+    }
+
+    .brand-text span {
+      font-size: 11px;
+      letter-spacing: 2.6px;
+      text-transform: uppercase;
+      color: rgba(43, 26, 31, .62);
+    }
+
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .top-links a {
+      text-decoration: none;
+      color: rgba(43, 26, 31, .70);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      transition: color .2s ease, transform .2s ease;
+    }
+
+    .top-links a.active {
+      color: var(--deep);
+    }
+
+    .top-links a:hover {
+      color: var(--deep);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      position: relative;
+      padding: 54px 26px 30px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(201, 112, 122, .11), rgba(139, 168, 136, .08)),
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .5), transparent 30%);
+    }
+
+    .petal {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .45;
+      pointer-events: none;
+      filter: blur(.2px);
+      animation: drift 10s ease-in-out infinite;
+    }
+
+    .petal.p1 {
+      width: 12px;
+      height: 12px;
+      left: 8%;
+      top: 22%;
+      background: rgba(201, 112, 122, .55);
+      animation-duration: 12s;
+    }
+
+    .petal.p2 {
+      width: 16px;
+      height: 16px;
+      left: 18%;
+      top: 10%;
+      background: rgba(139, 168, 136, .45);
+      animation-duration: 15s;
+    }
+
+    .petal.p3 {
+      width: 10px;
+      height: 10px;
+      right: 12%;
+      top: 24%;
+      background: rgba(201, 112, 122, .35);
+      animation-duration: 13s;
+    }
+
+    .petal.p4 {
+      width: 18px;
+      height: 18px;
+      right: 20%;
+      top: 8%;
+      background: rgba(139, 168, 136, .35);
+      animation-duration: 17s;
+    }
+
+    .hero-inner {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 22px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: currentColor;
+      opacity: .7;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 7vw, 76px);
+      color: var(--deep);
+      line-height: .92;
+      font-weight: 400;
+      letter-spacing: -.5px;
+      max-width: 12ch;
+    }
+
+    .hero-copy {
+      margin-top: 14px;
+      max-width: 64ch;
+      font-size: 16px;
+      line-height: 1.8;
+      color: rgba(43, 26, 31, .78);
+    }
+
+    .hero-note {
+      align-self: stretch;
+      background: rgba(255, 255, 255, .72);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      gap: 14px;
+    }
+
+    .note-stat {
+      display: grid;
+      gap: 6px;
+      padding: 16px 16px 14px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(250, 246, 242, .92), rgba(255, 255, 255, .92));
+      border: 1px solid rgba(122, 48, 64, .08);
+    }
+
+    .note-stat strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--deep);
+      font-weight: 500;
+    }
+
+    .note-stat span {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(43, 26, 31, .62);
+      font-weight: 800;
+    }
+
+    .content {
+      padding: 28px 26px 34px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    /* ---- alert messages ---- */
+    .alert {
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .alert-success {
+      background: rgba(139, 168, 136, .12);
+      border-color: rgba(139, 168, 136, .3);
+      color: #3F5C3D;
+    }
+
+    .alert-error {
+      background: rgba(179, 67, 63, .08);
+      border-color: rgba(179, 67, 63, .25);
+      color: var(--danger);
+    }
+
+    /* ---- review form ---- */
+    .review-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label.field-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .6px;
+      color: var(--deep);
+      text-transform: uppercase;
+    }
+
+    .star-rating {
+      display: flex;
+      flex-direction: row-reverse;
+      gap: 6px;
+      width: fit-content;
+    }
+
+    .star-rating input {
+      display: none;
+    }
+
+    .star-rating label {
+      font-size: 30px;
+      line-height: 1;
+      color: rgba(43, 26, 31, .18);
+      cursor: pointer;
+      transition: color .15s ease, transform .15s ease;
+    }
+
+    .star-rating label:hover {
+      transform: scale(1.12);
+    }
+
+    .star-rating input:checked~label,
+    .star-rating label:hover,
+    .star-rating label:hover~label {
+      color: var(--gold);
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      background: rgba(250, 246, 242, .6);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      transition: border-color .2s ease, background .2s ease;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--rose);
+      background: #fff;
+    }
+
+    input[type="file"] {
+      padding: 9px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: rgba(43, 26, 31, .5);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(145deg, var(--deep), var(--rose));
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(122, 48, 64, .18);
+    }
+
+    .btn-secondary {
+      background: rgba(122, 48, 64, .07);
+      color: var(--deep);
+    }
+
+    .btn-danger {
+      background: rgba(179, 67, 63, .08);
+      color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-small {
+      padding: 9px 14px;
+      font-size: 11px;
+    }
+
+    /* ---- review list ---- */
+    .reviews-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .review-card {
+      border-radius: 22px;
+      border: 1px solid rgba(122, 48, 64, .08);
+      background: linear-gradient(180deg, rgba(250, 246, 242, .92), #fff);
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .review-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, var(--deep), var(--rose));
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .review-author-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--deep);
+    }
+
+    .review-date {
+      font-size: 11px;
+      color: rgba(43, 26, 31, .5);
+    }
+
+    .review-stars {
+      letter-spacing: 2px;
+      color: var(--gold);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .review-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(43, 26, 31, .82);
+      white-space: pre-wrap;
+    }
+
+    .review-photo {
+      max-width: 220px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      display: block;
+    }
+
+    .review-reply {
+      margin-top: 4px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(139, 168, 136, .08);
+      border: 1px solid rgba(139, 168, 136, .25);
+      display: grid;
+      gap: 4px;
+    }
+
+    .review-reply .reply-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .review-reply p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(43, 26, 31, .80);
+      white-space: pre-wrap;
+    }
+
+    .admin-panel {
+      margin-top: 6px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(122, 48, 64, .15);
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-panel .admin-tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+
+    .reply-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .reply-form textarea {
+      flex: 1;
+      min-height: 64px;
+    }
+
+    .reply-form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 16px;
+      color: rgba(43, 26, 31, .55);
+      font-size: 14px;
+    }
+
+    .footer {
+      padding: 0 26px 34px;
+      display: grid;
+      gap: 14px;
+      color: rgba(43, 26, 31, .62);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .footer-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(122, 48, 64, .12), transparent);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--rose);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        border-radius: 0;
+      }
+
+      .hero {
+        padding: 30px 16px 22px;
+      }
+
+      h1 {
+        font-size: 40px;
+      }
+
+      .hero-copy {
+        font-size: 14px;
+      }
+
+      .note-stat strong {
+        font-size: 26px;
+      }
+
+      .content {
+        padding: 20px 16px 26px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .star-rating label {
+        font-size: 26px;
+        padding: 4px;
+      }
+
+      .review-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+      }
+
+      .review-author-name {
+        font-size: 13px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .cta-row {
+        flex-direction: column;
+      }
+
+      .reply-form-actions {
+        flex-direction: row;
+      }
+
+      .reply-form-actions .btn {
+        width: auto;
+        flex: 1;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .page {
+        width: min(1280px, calc(100% - 28px));
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-14px) translateX(6px) scale(1.05);
+      }
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+
+      25% {
+        transform: translateY(-10px) translateX(8px) rotate(8deg);
+      }
+
+      50% {
+        transform: translateY(5px) translateX(-6px) rotate(-6deg);
+      }
+
+      75% {
+        transform: translateY(-6px) translateX(4px) rotate(10deg);
+      }
+    }
+
+    @media (max-width: 860px) {
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero-note {
+        order: -1;
+      }
+
+      .topbar {
+        padding: 16px 18px;
+      }
+
+      .hero,
+      .content,
+      .footer {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100%, 100%);
+        margin: 0;
+        border-radius: 0;
+      }
+
+      .brand-text strong {
+        font-size: 21px;
+      }
+
+      .top-links {
+        display: none;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .reply-form {
+        flex-direction: column;
+      }
+
+      .review-photo {
+        max-width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a href="/start" class="brand" aria-label="Karinka Flowers">
+        <div class="brand-mark">K</div>
+        <div class="brand-text">
+          <strong>Karinka</strong>
+          <span>Flowers</span>
+        </div>
+      </a>
+      <nav class="top-links" aria-label="Навигация">
+        <a href="/start">Каталог</a>
+        <a href="/about">О нас</a>
+        <a href="/review" class="active">Отзывы</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="petal p1"></span>
+      <span class="petal p2"></span>
+      <span class="petal p3"></span>
+      <span class="petal p4"></span>
+
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">Karinka Flowers</div>
+          <h1>Отзывы</h1>
+          <p class="hero-copy">
+            Расскажите, как прошёл ваш заказ. Можно поставить оценку, написать пару слов
+            и приложить фото букета — это помогает нам становиться лучше, а другим
+            покупателям — сделать выбор.
+          </p>
+        </div>
+
+        <aside class="hero-note">
+          <div class="note-stat">
+            <strong>{{ reviews|length }}</strong>
+            <span>отзывов</span>
+          </div>
+          <div class="note-stat">
+            <strong>
+              {% if reviews and reviews|length > 0 %}
+              {{ "%.1f"|format((reviews|sum(attribute='rating')) / (reviews|length)) }}★
+              {% else %}
+              —
+              {% endif %}
+            </strong>
+            <span>средняя оценка</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="content">
+
+      {% if success %}
+      <div class="alert alert-success">{{ success }}</div>
+      {% endif %}
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+
+      <div class="card">
+        <div class="label">Оставить отзыв</div>
+        <form class="review-form" action="/review" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
+
+          <div class="field">
+            <label class="field-label">Ваша оценка</label>
+            <div class="star-rating">
+              <input type="radio" id="star5" name="rating" value="5" checked>
+              <label for="star5" title="5">★</label>
+              <input type="radio" id="star4" name="rating" value="4">
+              <label for="star4" title="4">★</label>
+              <input type="radio" id="star3" name="rating" value="3">
+              <label for="star3" title="3">★</label>
+              <input type="radio" id="star2" name="rating" value="2">
+              <label for="star2" title="2">★</label>
+              <input type="radio" id="star1" name="rating" value="1">
+              <label for="star1" title="1">★</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="review-text">Текст отзыва</label>
+            <textarea id="review-text" name="text" placeholder="Расскажите, что понравилось или что можно улучшить..."
+              required></textarea>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="review-photo">Фото (необязательно)</label>
+            <input type="file" id="review-photo" name="photo" accept="image/*">
+            <span class="field-hint">Можно приложить фотографию букета — она появится рядом с вашим отзывом.</span>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="label">Что говорят о нас</div>
+
+        <div class="reviews-list">
+          {% if not reviews %}
+          <div class="empty-state">Пока отзывов нет — будьте первым, кто расскажет о своих впечатлениях.</div>
+          {% endif %}
+
+          {% for review in reviews %}
+          <article class="review-card" id="review-{{ review.id }}">
+            <div class="review-head">
+              <div class="review-author">
+                <div class="review-avatar">{{ (review.author_name or "?")[:1]|upper }}</div>
+                <div>
+                  <div class="review-author-name">{{ review.author_name }}</div>
+                  <div class="review-date">{{ review.created_at.strftime("%d.%m.%Y") if review.created_at else "" }}
+                  </div>
+                </div>
+              </div>
+              <div class="review-stars">
+                {% for i in range(1, 6) %}{% if i <= review.rating %}★{% else %}☆{% endif %}{% endfor %} </div>
+              </div>
+
+              <p class="review-text">{{ review.text }}</p>
+
+              {% if review.photo_path %}
+              <img class="review-photo" src="{{ review.photo_path }}" alt="Фото к отзыву от {{ review.author_name }}">
+              {% endif %}
+
+              {% if review.admin_reply %}
+              <div class="review-reply">
+                <span class="reply-label">Ответ Karinka Flowers</span>
+                <p>{{ review.admin_reply }}</p>
+              </div>
+              {% endif %}
+
+              {% if user and user.is_admin %}
+              <div class="admin-panel">
+                <span class="admin-tag">Панель администратора</span>
+
+                <form class="reply-form" action="/admin/review/reply/{{ review.id }}" method="post">
+                  <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
+                  <textarea name="reply"
+                    placeholder="Написать ответ от имени магазина...">{{ review.admin_reply or "" }}</textarea>
+                  <div class="reply-form-actions">
+                    <button type="submit" class="btn btn-secondary btn-small">Ответить</button>
+                    <button type="button" class="btn btn-danger btn-small" data-review-id="{{ review.id }}"
+                      onclick="deleteReview(this)">Удалить</button>
+                  </div>
+                </form>
+              </div>
+              {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-line"></div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/start">Перейти в каталог</a>
+        <a class="btn btn-secondary" href="/about">О нас</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    async function deleteReview(button) {
+      const id = button.dataset.reviewId;
+      if (!confirm('Удалить этот отзыв? Действие нельзя отменить.')) return;
+
+      const card = document.getElementById('review-' + id);
+
+      try {
+        const res = await fetch('/admin/review/' + id, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Request failed');
+
+        if (card) {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(-6px)';
+          setTimeout(() => card.remove(), 200);
+        }
+      } catch (err) {
+        alert('Не удалось удалить отзыв. Попробуйте обновить страницу.');
+      }
+    }
+  </script>
+</body>
+
+</html>

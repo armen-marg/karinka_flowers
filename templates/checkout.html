@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Оформление корзины — Karinka Flowers</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --blush: #F2D6D3;
+      --rose: #C9707A;
+      --rose-deep: #B85C68;
+      --deep: #7A3040;
+      --sage: #8BA888;
+      --cream: #FAF6F2;
+      --ink: #2B1A1F;
+      --kraft: #F2E7D4;
+      --line: rgba(122, 48, 64, 0.10);
+      --shadow-sm: 0 6px 18px -10px rgba(43, 26, 31, 0.25);
+      --shadow-md: 0 16px 36px -18px rgba(43, 26, 31, 0.30);
+      --radius: 20px;
+      --bar-h: 78px;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Raleway', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: calc(var(--bar-h) + 18px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(250, 246, 242, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .circle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow-sm);
+      font-size: 17px;
+      color: var(--deep);
+      border: none;
+    }
+
+    .topbar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--deep);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow-sm);
+      border-radius: 999px;
+      padding: 5px 12px 5px 5px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      color: var(--cream);
+      background: linear-gradient(145deg, var(--deep), var(--rose));
+      flex-shrink: 0;
+    }
+
+    .user-chip span { font-size: 11.5px; font-weight: 700; color: var(--deep); }
+
+    .max-w { max-width: 640px; margin: 0 auto; }
+
+    .page-head {
+      padding: 26px 16px 6px;
+    }
+
+    .page-head h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: var(--deep);
+    }
+
+    .page-head p {
+      margin-top: 6px;
+      font-size: 13.5px;
+      color: rgba(43, 26, 31, .6);
+    }
+
+    .content { padding: 16px; display: grid; gap: 14px; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--deep);
+      opacity: .7;
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    .row-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .row-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .row-item + .row-item { border-top: 1px solid var(--line); }
+
+    .row-ic {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201, 112, 122, .1);
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .row-body { flex: 1; min-width: 0; }
+
+    .row-body label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+      color: rgba(43, 26, 31, .48);
+      margin-bottom: 4px;
+    }
+
+    .row-body p.static-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+
+    input, textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    input::placeholder, textarea::placeholder { color: rgba(43, 26, 31, .35); font-weight: 400; }
+    input:focus, textarea:focus { outline: none; }
+    .row-card:focus-within {
+      box-shadow: 0 0 0 3px rgba(201, 112, 122, .18), var(--shadow-sm);
+      border-color: rgba(201, 112, 122, .4);
+    }
+    textarea { min-height: 60px; resize: vertical; }
+
+    .map-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--rose-deep);
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border-top: 1px dashed var(--line);
+    }
+
+    .map-wrap { border-top: 1px solid var(--line); }
+    .map-wrap[hidden] { display: none; }
+    #map { height: 260px; width: 100%; }
+
+    .map-hint {
+      padding: 10px 16px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: rgba(43, 26, 31, .6);
+      background: var(--kraft);
+    }
+    .map-hint.error { color: #C0392B; background: rgba(192, 57, 43, .08); font-weight: 600; }
+
+    .pay-row { position: relative; }
+    .pay-row input { position: absolute; opacity: 0; pointer-events: none; }
+    .pay-row-box { display: flex; align-items: center; gap: 12px; padding: 15px 16px; cursor: pointer; }
+    .pay-row + .pay-row .pay-row-box { border-top: 1px solid var(--line); }
+    .pay-copy strong { display: block; font-size: 14px; color: var(--ink); font-weight: 700; }
+    .pay-copy span { font-size: 11.5px; color: rgba(43, 26, 31, .55); }
+
+    .radio-dot {
+      margin-left: auto;
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      border: 2px solid rgba(122, 48, 64, .22);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .pay-row input:checked ~ .pay-row-box .radio-dot { border-color: var(--rose); }
+    .pay-row input:checked ~ .pay-row-box .radio-dot::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--rose);
+    }
+    .pay-row input:checked ~ .pay-row-box { background: rgba(201, 112, 122, .06); }
+
+    .card-panel[hidden] { display: none; }
+    .card-panel { border-top: 1px solid var(--line); }
+    .card-row { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 16px; }
+    .card-row + .card-row { border-top: 1px solid var(--line); }
+    .card-option { position: relative; flex: 1; }
+    .card-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .card-option-box { display: flex; align-items: center; gap: 10px; padding: 11px 0; cursor: pointer; }
+    .card-brand {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: #fff;
+      background: var(--deep);
+      padding: 3px 7px;
+      border-radius: 6px;
+    }
+    .card-number { font-size: 13px; color: var(--ink); font-weight: 700; }
+    .card-exp { font-size: 11.5px; color: rgba(43, 26, 31, .55); }
+    .card-empty { padding: 12px 16px; font-size: 12.5px; color: rgba(43, 26, 31, .55); }
+
+    /* cart lines summary */
+    .cart-line {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      align-items: center;
+    }
+    .cart-line + .cart-line { border-top: 1px solid var(--line); }
+    .cart-line img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .cart-line-info { flex: 1; min-width: 0; }
+    .cart-line-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cart-line-meta { font-size: 12px; color: rgba(43, 26, 31, .55); margin-top: 2px; }
+    .cart-line-total { font-size: 13px; font-weight: 800; color: var(--rose-deep); white-space: nowrap; }
+
+    .receipt {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 1.5; }
+    .summary-row span:first-child { color: rgba(43, 26, 31, .65); }
+    .summary-row span:last-child { color: var(--deep); font-weight: 700; text-align: right; }
+    .receipt-divider { border: none; border-top: 1px dashed var(--line); margin: 2px 0; }
+    .summary-row.grand { font-size: 16px; }
+    .summary-row.grand span:last-child { color: var(--rose-deep); font-weight: 800; }
+
+    .empty-cart {
+      text-align: center;
+      padding: 50px 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: rgba(43, 26, 31, .6);
+    }
+    .empty-cart a {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: var(--deep);
+      color: var(--cream);
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+
+    .message {
+      margin: 0 16px 14px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      background: rgba(201, 112, 122, .10);
+      border: 1px solid rgba(201, 112, 122, .22);
+      color: var(--rose-deep);
+    }
+
+    .bottom-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 40;
+      background: rgba(250, 246, 242, 0.94);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--line);
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+    .bottom-bar-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .bottom-total { display: flex; flex-direction: column; line-height: 1.25; flex-shrink: 0; }
+    .bottom-total span:first-child {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: rgba(43, 26, 31, .5);
+    }
+    .bottom-total span:last-child { font-size: 17px; font-weight: 800; color: var(--deep); }
+
+    .btn-primary {
+      flex: 1;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 18px;
+      background: linear-gradient(145deg, var(--deep), var(--rose));
+      color: var(--cream);
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 14px 24px -14px rgba(122, 48, 64, .55);
+    }
+    .btn-primary:disabled { opacity: .5; cursor: default; }
+
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--rose);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a href="/start" class="circle-btn" aria-label="Назад">←</a>
+    <span class="topbar-title">Оформление заказа</span>
+    <div class="user-chip">
+      <span class="user-avatar">{{ display_initial }}</span>
+      <span>{{ display_label }}</span>
+    </div>
+  </header>
+
+  <main class="max-w">
+    <div class="page-head">
+      <h1>Ваша корзина</h1>
+      <p>Проверьте товары и укажите, куда и как доставить букеты</p>
+    </div>
+
+    <div id="checkoutMessage"></div>
+
+    <div class="content" id="checkoutContent">
+      <!-- заполняется через JS из localStorage-корзины -->
+    </div>
+  </main>
+
+  <div class="bottom-bar" id="bottomBar" hidden>
+    <div class="bottom-bar-inner">
+      <div class="bottom-total">
+        <span>Итого</span>
+        <span id="barTotalPrice">0 ֏</span>
+      </div>
+      <button class="btn-primary" type="button" id="submitCheckoutBtn">Подтвердить заказ</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const CART_KEY = 'karinka_cart';
+
+    function readCart() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) { return []; }
+    }
+
+    function writeCart(items) {
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
+    }
+
+    function formatPrice(value) {
+      return Math.round(Number(value) || 0).toLocaleString('ru-RU').replace(/,/g, ' ') + ' \u058F';
+    }
+
+    const DELIVERY_BASE_FEE = 1000; // синхронизировано с server.py DELIVERY_BASE_FEE (fallback без карты)
+    const DELIVERY_RATE_PER_KM = 100;
+    const SHOP_LAT = 40.20911821674716;
+    const SHOP_LNG = 44.467379830578224;
+
+    let deliveryFee = DELIVERY_BASE_FEE;
+    let selectedLat = null;
+    let selectedLng = null;
+
+    const cardsData = {{ cards_json|safe }};
+
+    const content = document.getElementById('checkoutContent');
+    const bottomBar = document.getElementById('bottomBar');
+    const barTotalPrice = document.getElementById('barTotalPrice');
+    const submitBtn = document.getElementById('submitCheckoutBtn');
+    const checkoutMessage = document.getElementById('checkoutMessage');
+
+    function showError(text) {
+      checkoutMessage.innerHTML = `<div class="message">${text}</div>`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError() {
+      checkoutMessage.innerHTML = '';
+    }
+
+    function cartSubtotal(cart) {
+      return cart.reduce((sum, i) => sum + (Number(i.price) || 0) * i.qty, 0);
+    }
+
+    function renderEmpty() {
+      content.innerHTML = `
+        <div class="empty-cart">
+          Корзина пуста — сначала добавьте букеты из каталога 🌸
+          <br>
+          <a href="/start">Перейти в каталог</a>
+        </div>
+      `;
+      bottomBar.hidden = true;
+    }
+
+    function cardOptionsHtml() {
+      if (!cardsData.length) {
+        return '<p class="card-empty">Сохранённых карт нет — добавьте карту на странице заказа отдельного товара.</p>';
+      }
+      return cardsData.map((c, idx) => `
+        <div class="card-row">
+          <label class="card-option">
+            <input type="radio" name="card_id" value="${c.id}" ${idx === 0 ? 'checked' : ''}>
+            <div class="card-option-box">
+              <span class="card-brand">${(c.brand || 'card').toUpperCase()}</span>
+              <span class="card-number">\u2022\u2022\u2022\u2022 ${c.last4}</span>
+              <span class="card-exp">${String(c.exp_month).padStart(2, '0')}/${String(c.exp_year).slice(-2)}</span>
+            </div>
+          </label>
+        </div>
+      `).join('');
+    }
+
+    function renderContent() {
+      const cart = readCart();
+      if (!cart.length) {
+        renderEmpty();
+        return;
+      }
+
+      const subtotal = cartSubtotal(cart);
+      const total = subtotal + deliveryFee;
+
+      content.innerHTML = `
+        <div class="section">
+          <div class="section-label">Товары в заказе</div>
+          <div class="row-card" id="cartLinesWrap">
+            ${cart.map((item) => `
+              <div class="cart-line">
+                <img src="${item.image}" alt="${item.title}">
+                <div class="cart-line-info">
+                  <div class="cart-line-title">«${item.title}»</div>
+                  <div class="cart-line-meta">${item.qty} \u00d7 ${formatPrice(item.price)}</div>
+                </div>
+                <div class="cart-line-total">${formatPrice((Number(item.price) || 0) * item.qty)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Получатель и доставка</div>
+          <div class="row-card">
+            <div class="row-item">
+              <span class="row-ic">👤</span>
+              <div class="row-body">
+                <label>Имя</label>
+                <p class="static-name">{{ display_label }}</p>
+              </div>
+            </div>
+            <div class="row-item">
+              <span class="row-ic">📞</span>
+              <div class="row-body">
+                <label for="phone">Телефон</label>
+                <input id="phone" type="text" placeholder="+374 ..." required>
+              </div>
+            </div>
+            <div class="row-item">
+              <span class="row-ic">📍</span>
+              <div class="row-body">
+                <label for="address">Адрес доставки</label>
+                <input id="address" type="text" placeholder="Улица, дом, квартира" required>
+              </div>
+            </div>
+
+            <button type="button" id="mapToggle" class="map-toggle-btn">
+              <span>📍 Выбрать на карте</span>
+            </button>
+
+            <div id="mapWrap" class="map-wrap" hidden>
+              <div id="map"></div>
+              <p class="map-hint">Кликните внутри пунктирной границы Армении — адрес и доставка определятся автоматически.</p>
+              <p id="mapMessage" class="map-hint" hidden></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Способ оплаты</div>
+          <div class="row-card">
+            <label class="pay-row">
+              <input type="radio" name="payment_method" value="cash" id="paymentCash" checked>
+              <div class="pay-row-box">
+                <span class="row-ic">💵</span>
+                <div class="pay-copy"><strong>Наличными</strong><span>Оплата курьеру при получении</span></div>
+                <span class="radio-dot"></span>
+              </div>
+            </label>
+            <label class="pay-row">
+              <input type="radio" name="payment_method" value="card" id="paymentCard">
+              <div class="pay-row-box">
+                <span class="row-ic">💳</span>
+                <div class="pay-copy"><strong>Картой</strong><span>Оплата при подтверждении заказа</span></div>
+                <span class="radio-dot"></span>
+              </div>
+            </label>
+            <div id="cardPanel" class="card-panel" hidden>
+              ${cardOptionsHtml()}
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Комментарий</div>
+          <div class="row-card">
+            <div class="row-item">
+              <span class="row-ic">💬</span>
+              <div class="row-body">
+                <label for="comment">Пожелания к заказу</label>
+                <textarea id="comment" placeholder="Например: позвонить за 10 минут до доставки"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Ваш заказ</div>
+          <div class="receipt">
+            <div class="summary-row"><span>Товары (${cart.length})</span><span>${formatPrice(subtotal)}</span></div>
+            <div class="summary-row" id="distanceRow" hidden><span>Расстояние от магазина</span><span id="distanceValue">—</span></div>
+            <div class="summary-row"><span>Доставка</span><span id="deliveryPriceEl">${formatPrice(deliveryFee)}</span></div>
+            <hr class="receipt-divider">
+            <div class="summary-row grand"><span>Итого</span><span id="totalPriceEl">${formatPrice(total)}</span></div>
+          </div>
+        </div>
+      `;
+
+      bottomBar.hidden = false;
+      barTotalPrice.textContent = formatPrice(total);
+
+      const paymentCash = document.getElementById('paymentCash');
+      const paymentCard = document.getElementById('paymentCard');
+      const cardPanel = document.getElementById('cardPanel');
+
+      function updateCardPanel() { cardPanel.hidden = !paymentCard.checked; }
+      paymentCash.addEventListener('change', updateCardPanel);
+      paymentCard.addEventListener('change', updateCardPanel);
+
+      initMapToggle();
+    }
+
+    function updateTotals() {
+      const cart = readCart();
+      const subtotal = cartSubtotal(cart);
+      const total = subtotal + deliveryFee;
+      const totalEl = document.getElementById('totalPriceEl');
+      const deliveryEl = document.getElementById('deliveryPriceEl');
+      if (totalEl) totalEl.textContent = formatPrice(total);
+      if (deliveryEl) deliveryEl.textContent = formatPrice(deliveryFee);
+      barTotalPrice.textContent = formatPrice(total);
+    }
+
+    function haversineKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    const ARMENIA_BOUNDS = [[38.74, 43.40], [41.30, 46.62]];
+    const YEREVAN_CENTER = [40.1772, 44.5035];
+    const ARMENIA_POLYGON = [
+      [41.092143, 43.582746], [41.248129, 44.97248], [40.985354, 45.179496],
+      [40.81229, 45.560351], [40.561504, 45.359175], [40.218476, 45.891907],
+      [39.899994, 45.610012], [39.628021, 46.034534], [39.464155, 46.483499],
+      [38.770605, 46.50572], [38.741201, 46.143623], [39.319719, 45.735379],
+      [39.473999, 45.739978], [39.471751, 45.298145], [39.740004, 45.001987],
+      [39.713003, 44.79399], [40.005, 44.400009], [40.253564, 43.656436],
+      [40.740201, 43.752658]
+    ];
+
+    function isPointInArmenia(lat, lng) {
+      let inside = false;
+      for (let i = 0, j = ARMENIA_POLYGON.length - 1; i < ARMENIA_POLYGON.length; j = i++) {
+        const yi = ARMENIA_POLYGON[i][0], xi = ARMENIA_POLYGON[i][1];
+        const yj = ARMENIA_POLYGON[j][0], xj = ARMENIA_POLYGON[j][1];
+        const intersect = ((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    let map = null;
+    let marker = null;
+
+    function initMapToggle() {
+      const toggleBtn = document.getElementById('mapToggle');
+      const mapWrap = document.getElementById('mapWrap');
+      if (!toggleBtn) return;
+
+      toggleBtn.addEventListener('click', () => {
+        const isHidden = mapWrap.hasAttribute('hidden');
+        if (isHidden) {
+          mapWrap.removeAttribute('hidden');
+          toggleBtn.querySelector('span').textContent = 'Скрыть карту';
+          if (!map) initMap();
+          setTimeout(() => map.invalidateSize(), 150);
+        } else {
+          mapWrap.setAttribute('hidden', '');
+          toggleBtn.querySelector('span').textContent = '📍 Выбрать на карте';
+        }
+      });
+    }
+
+    function initMap() {
+      map = L.map('map', { maxBounds: ARMENIA_BOUNDS, maxBoundsViscosity: 0.5, minZoom: 7 }).setView(YEREVAN_CENTER, 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+      }).addTo(map);
+      L.polygon(ARMENIA_POLYGON, { color: '#7A3040', weight: 2, fill: false, dashArray: '4 6' }).addTo(map);
+
+      const shopIcon = L.divIcon({
+        className: "shop-marker",
+        html: '<div style="width:14px;height:14px;background:red;border-radius:50%;box-shadow:0 0 0 6px rgba(255,0,0,0.2);"></div>',
+        iconSize: [14, 14], iconAnchor: [7, 7]
+      });
+      L.marker([SHOP_LAT, SHOP_LNG], { icon: shopIcon }).addTo(map).bindPopup("📍 Магазин Karinka Flowers");
+
+      map.on('click', onMapClick);
+    }
+
+    function onMapClick(e) {
+      const lat = e.latlng.lat, lng = e.latlng.lng;
+      const mapMessage = document.getElementById('mapMessage');
+
+      if (!isPointInArmenia(lat, lng)) {
+        mapMessage.textContent = 'Эта точка вне Армении — доставка туда недоступна.';
+        mapMessage.hidden = false;
+        mapMessage.classList.add('error');
+        return;
+      }
+      mapMessage.hidden = true;
+
+      if (marker) marker.setLatLng(e.latlng);
+      else marker = L.marker(e.latlng).addTo(map);
+
+      selectedLat = lat;
+      selectedLng = lng;
+
+      const distanceKm = haversineKm(SHOP_LAT, SHOP_LNG, lat, lng);
+      deliveryFee = Math.round(distanceKm * DELIVERY_RATE_PER_KM) + DELIVERY_BASE_FEE;
+
+      const distanceEl = document.getElementById('distanceValue');
+      const distanceRow = document.getElementById('distanceRow');
+      if (distanceEl && distanceRow) {
+        distanceEl.textContent = '\u2248 ' + distanceKm.toFixed(1) + ' \u043a\u043c';
+        distanceRow.hidden = false;
+      }
+      updateTotals();
+
+      const addressInput = document.getElementById('address');
+      const oldPlaceholder = addressInput.placeholder;
+      addressInput.placeholder = 'Определяем адрес...';
+
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=ru`)
+        .then((res) => res.json())
+        .then((data) => { if (data && data.display_name) addressInput.value = data.display_name; })
+        .catch(() => {})
+        .finally(() => { addressInput.placeholder = oldPlaceholder; });
+    }
+
+    submitBtn.addEventListener('click', async () => {
+      clearError();
+
+      const cart = readCart();
+      if (!cart.length) { showError('Корзина пуста.'); return; }
+
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const comment = document.getElementById('comment').value.trim();
+      const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+      const cardIdInput = document.querySelector('input[name="card_id"]:checked');
+
+      if (!phone.startsWith('+374') || !/^\d{8}$/.test(phone.slice(4))) {
+        showError('Номер телефона должен быть в формате +374XXXXXXXX.');
+        return;
+      }
+      if (!address) {
+        showError('Укажите адрес доставки.');
+        return;
+      }
+      if (paymentMethod === 'card' && !cardIdInput) {
+        showError('Выберите карту для оплаты.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('customer_name', '{{ display_label }}');
+      formData.append('phone', phone);
+      formData.append('address', address);
+      formData.append('payment_method', paymentMethod);
+      formData.append('comment', comment);
+      if (selectedLat !== null) formData.append('lat', selectedLat);
+      if (selectedLng !== null) formData.append('lng', selectedLng);
+      if (cardIdInput) formData.append('card_id', cardIdInput.value);
+      formData.append('cart_items', JSON.stringify(cart.map((i) => ({ id: i.id, qty: i.qty }))));
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Оформляем…';
+
+      try {
+        const response = await fetch('/checkout', { method: 'POST', body: formData, credentials: 'include' });
+
+        if (response.redirected) {
+          // успех — бэкенд сделал 303 на /confirm_order/{id}; корзину можно очистить
+          localStorage.removeItem(CART_KEY);
+          window.location.href = response.url;
+          return;
+        }
+
+        if (!response.ok) {
+          let message = 'Не удалось оформить заказ.';
+          try {
+            const data = await response.json();
+            if (data && data.detail) message = data.detail;
+          } catch (_) {}
+          showError(message);
+        }
+      } catch (err) {
+        console.error(err);
+        showError('Не удалось связаться с сервером. Проверьте подключение.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Подтвердить заказ';
+      }
+    });
+
+    renderContent();
+  </script>
+</body>
+
+</html>

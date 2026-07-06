@@ -1313,13 +1313,9 @@
           </div>
         </a>
         <div class="bouquet-card-body">
-          <button type="button" class="add-to-cart-btn"
-            data-id="{{ flower.id }}"
-            data-title="{{ flower.title }}"
-            data-price="{{ flower.price|default(0, true) }}"
-            data-image="{{ flower.image_path }}"
-            data-stock="{{ flower.stock }}"
-            {% if flower.stock <= 0 %}disabled{% endif %}>
+          <button type="button" class="add-to-cart-btn" data-id="{{ flower.id }}" data-title="{{ flower.title }}"
+            data-price="{{ flower.price|default(0, true) }}" data-image="{{ flower.image_path }}"
+            data-stock="{{ flower.stock }}" {% if flower.stock <=0 %}disabled{% endif %}>
             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21.6 8H6" />
             </svg>
@@ -1351,8 +1347,8 @@
           <span>Итого</span>
           <span id="cartTotal">0 ֏</span>
         </div>
-        <a href="/start" class="cart-checkout-btn" id="cartCheckoutBtn">Оформить заказ</a>
-        <p class="cart-hint">Каждый товар оформляется отдельным заказом на странице оплаты</p>
+        <button type="button" class="cart-checkout-btn" id="cartCheckoutBtn">Оформить заказ</button>
+        <p class="cart-hint">Доставка и оплата — на следующем шаге, одной покупкой</p>
       </div>
     </div>
   </div>
@@ -1517,6 +1513,11 @@
     const cartFoot = document.getElementById('cartFoot');
     const cartTotalEl = document.getElementById('cartTotal');
     const cartCheckoutBtn = document.getElementById('cartCheckoutBtn');
+    if (cartCheckoutBtn) {
+      cartCheckoutBtn.addEventListener('click', () => {
+        window.location.href = '/checkout';
+      });
+    }
 
     function renderCart() {
       const cart = readCart();
@@ -1533,10 +1534,6 @@
 
       cartFoot.hidden = false;
       cartTotalEl.textContent = formatPrice(cartTotal(cart)) + ' \u058F';
-
-      // "Оформить заказ" ведёт на страницу оформления первого товара в корзине —
-      // сама страница /order/{id} на бэкенде принимает один товар за раз.
-      cartCheckoutBtn.href = '/order/' + cart[0].id;
 
       cartBody.innerHTML = cart.map((item) => `
         <div class="cart-item" data-id="${item.id}">

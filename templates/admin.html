@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel — Karinka Flowers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --bg-2: #10182f;
+            --panel: rgba(16, 24, 47, 0.78);
+            --panel-2: rgba(255, 255, 255, 0.06);
+            --line: rgba(255, 255, 255, 0.10);
+            --text: #e5e7eb;
+            --muted: rgba(229, 231, 235, 0.72);
+            --soft: #94a3b8;
+            --accent: #f472b6;
+            --accent-2: #8b5cf6;
+            --good: #34d399;
+            --bad: #fb7185;
+            --warn: #fbbf24;
+            --blue: #60a5fa;
+            --shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            --glow: 0 0 0 1px rgba(244, 114, 182, .14), 0 0 30px rgba(244, 114, 182, .12);
+            --radius: 22px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(244, 114, 182, .14), transparent 30%),
+                radial-gradient(circle at top right, rgba(139, 92, 246, .16), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(96, 165, 250, .10), transparent 25%),
+                linear-gradient(180deg, #070b16 0%, #0b1020 45%, #090d18 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background:
+                linear-gradient(180deg, rgba(16, 24, 47, .96), rgba(10, 16, 33, .98)),
+                linear-gradient(135deg, rgba(244, 114, 182, .08), rgba(139, 92, 246, .06));
+            border-right: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 12px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            margin-bottom: 4px;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .35), transparent 22%),
+                linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 28px rgba(244, 114, 182, .28);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .brand-text strong {
+            font-size: 18px;
+            letter-spacing: .2px;
+        }
+
+        .brand-text span {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .profile {
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .04);
+            box-shadow: var(--glow);
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .35), transparent 20%),
+                linear-gradient(135deg, rgba(244, 114, 182, .95), rgba(96, 165, 250, .85));
+            color: white;
+            font-weight: 800;
+            font-size: 18px;
+            box-shadow: 0 10px 30px rgba(244, 114, 182, .24);
+            flex-shrink: 0;
+        }
+
+        .profile-meta {
+            min-width: 0;
+        }
+
+        .profile-meta .name {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+        }
+
+        .profile-meta .email {
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+            margin-top: 4px;
+        }
+
+        .role-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(52, 211, 153, .10);
+            color: #86efac;
+            border: 1px solid rgba(52, 211, 153, .18);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--good);
+            box-shadow: 0 0 14px rgba(52, 211, 153, .65);
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 13px 14px;
+            border-radius: 16px;
+            color: var(--text);
+            background: transparent;
+            border: 1px solid transparent;
+            transition: .2s ease;
+            font-weight: 500;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: linear-gradient(135deg, rgba(244, 114, 182, .12), rgba(139, 92, 246, .10));
+            border-color: rgba(244, 114, 182, .18);
+            box-shadow: 0 0 0 1px rgba(244, 114, 182, .06), 0 12px 28px rgba(0, 0, 0, .18);
+            transform: translateX(2px);
+        }
+
+        .menu small {
+            color: var(--soft);
+            font-size: 12px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: grid;
+            gap: 10px;
+        }
+
+        .sidebar-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, .09);
+            background: rgba(255, 255, 255, .05);
+            transition: .2s ease;
+        }
+
+        .sidebar-action:hover {
+            transform: translateY(-1px);
+            border-color: rgba(244, 114, 182, .22);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+        }
+
+        .content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            padding: 26px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .title-wrap h1 {
+            font-size: 30px;
+            line-height: 1.1;
+            letter-spacing: -.02em;
+            margin-bottom: 8px;
+        }
+
+        .title-wrap p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 255, 255, .10);
+            color: white;
+            background: rgba(255, 255, 255, .05);
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s ease;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, .14);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(244, 114, 182, .22);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-color: transparent;
+            box-shadow: 0 16px 34px rgba(244, 114, 182, .18);
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 18px 42px rgba(244, 114, 182, .24);
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin: 20px 0 18px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            border-radius: var(--radius);
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, .12), transparent 35%),
+                linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: var(--shadow);
+            min-height: 138px;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -35px -55px auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244, 114, 182, .18), transparent 62%);
+            pointer-events: none;
+        }
+
+        .stat-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            margin-bottom: 8px;
+        }
+
+        .stat-foot {
+            font-size: 12px;
+            color: var(--soft);
+            line-height: 1.5;
+        }
+
+        .panels {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 16px;
+            margin-top: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 18px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .03);
+            flex-wrap: wrap;
+        }
+
+        .panel-head h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .panel-head p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .search-box {
+            min-width: 280px;
+            max-width: 360px;
+            width: 100%;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .10);
+            background: rgba(6, 10, 18, .45);
+            color: var(--text);
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: rgba(244, 114, 182, .35);
+            box-shadow: 0 0 0 4px rgba(244, 114, 182, .10);
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--soft);
+            pointer-events: none;
+        }
+
+        .table-wrap {
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 930px;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--soft);
+            font-weight: 700;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .02);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+
+        tbody td {
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            vertical-align: middle;
+            color: rgba(229, 231, 235, .92);
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: .16s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .user-main {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-main strong {
+            font-weight: 700;
+        }
+
+        .user-main span {
+            color: var(--soft);
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            white-space: nowrap;
+        }
+
+        .badge::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .badge.ok {
+            background: rgba(52, 211, 153, .12);
+            color: #86efac;
+            border: 1px solid rgba(52, 211, 153, .18);
+        }
+
+        .badge.ok::before {
+            background: var(--good);
+            box-shadow: 0 0 12px rgba(52, 211, 153, .5);
+        }
+
+        .badge.bad {
+            background: rgba(251, 113, 133, .12);
+            color: #fda4af;
+            border: 1px solid rgba(251, 113, 133, .18);
+        }
+
+        .badge.bad::before {
+            background: var(--bad);
+            box-shadow: 0 0 12px rgba(251, 113, 133, .5);
+        }
+
+        .badge.admin {
+            background: rgba(96, 165, 250, .12);
+            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, .18);
+        }
+
+        .badge.admin::before {
+            background: var(--blue);
+            box-shadow: 0 0 12px rgba(96, 165, 250, .45);
+        }
+
+        .badge.neutral {
+            background: rgba(148, 163, 184, .12);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, .18);
+        }
+
+        .badge.neutral::before {
+            background: var(--soft);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .mini-btn {
+            border: 1px solid rgba(255, 255, 255, .10);
+            border-radius: 12px;
+            padding: 9px 12px;
+            background: rgba(255, 255, 255, .05);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .mini-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .mini-btn.ban {
+            background: rgba(251, 113, 133, .12);
+            border-color: rgba(251, 113, 133, .18);
+            color: #fecdd3;
+        }
+
+        .mini-btn.unban {
+            background: rgba(52, 211, 153, .12);
+            border-color: rgba(52, 211, 153, .18);
+            color: #bbf7d0;
+        }
+
+        .mini-btn.admin {
+            background: rgba(96, 165, 250, .12);
+            border-color: rgba(96, 165, 250, .18);
+            color: #dbeafe;
+        }
+
+        .side-stack {
+            display: grid;
+            gap: 16px;
+        }
+
+        .info-card {
+            padding: 18px;
+            border-radius: var(--radius);
+            background:
+                radial-gradient(circle at top right, rgba(244, 114, 182, .10), transparent 35%),
+                linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: var(--shadow);
+        }
+
+        .info-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 13px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .06);
+            font-size: 13px;
+        }
+
+        .list-item span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .section-title {
+            margin: 22px 0 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .section-title h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .empty {
+            padding: 26px 18px;
+            text-align: center;
+            color: var(--soft);
+            display: none;
+        }
+
+        .glow-line {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(244, 114, 182, .45), rgba(139, 92, 246, .40), transparent);
+            margin: 14px 0 6px;
+            filter: blur(.2px);
+        }
+
+        ::selection {
+            background: rgba(244, 114, 182, .28);
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .16);
+            border-radius: 999px;
+            border: 2px solid rgba(0, 0, 0, 0);
+            background-clip: padding-box;
+        }
+
+        @media (max-width: 1120px) {
+            .grid-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 860px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-width: 0;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .content {
+                padding: 16px;
+            }
+
+            .grid-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .title-wrap h1 {
+                font-size: 24px;
+            }
+
+            .profile-meta .name,
+            .profile-meta .email {
+                max-width: 130px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">K</div>
+            <div class="brand-text">
+                <strong>Karinka Flowers</strong>
+                <span>Admin dashboard</span>
+            </div>
+        </div>
+
+        <div class="profile">
+            <div class="profile-top">
+                <div class="avatar">{{ user.username[0]|upper if user and user.username else "A" }}</div>
+                <div class="profile-meta">
+                    <div class="name">{{ user.username if user and user.username else "Admin" }}</div>
+                    <div class="email">{{ user.email if user and user.email else "" }}</div>
+                </div>
+            </div>
+            <div class="role-pill">
+                <span class="role-dot"></span>
+                Super Admin Access
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="#overview" class="active">
+                <span>Обзор</span>
+                <small>stats</small>
+            </a>
+            <a href="#users">
+                <span>Пользователи</span>
+                <small>manage</small>
+            </a>
+            <a href="#moderation">
+                <span>Модерация</span>
+                <small>ban / unban</small>
+            </a>
+            <a href="#tools">
+                <span>Инструменты</span>
+                <small>quick actions</small>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="/start" class="sidebar-action">Открыть сайт</a>
+            <a href="/logout" class="sidebar-action">Выйти</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <section class="topbar" id="overview">
+            <div class="title-wrap">
+                <h1>Панель администратора</h1>
+                <p>Полный контроль над пользователями, ролями и блокировками. Всё аккуратно, быстро и под подсветку.</p>
+            </div>
+
+            <div class="top-actions">
+                <a href="/start" class="btn">На сайт</a>
+                <a href="/logout" class="btn primary">Logout</a>
+            </div>
+        </section>
+
+        <div class="grid-stats">
+            <div class="stat-card">
+                <div class="stat-head">
+                    <div class="stat-label">Всего пользователей</div>
+                    <div class="stat-icon">👥</div>
+                </div>
+                <div class="stat-value">{{ total_users }}</div>
+                <div class="stat-foot">Общее количество аккаунтов в базе данных.</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-head">
+                    <div class="stat-label">Подтверждённые</div>
+                    <div class="stat-icon">✅</div>
+                </div>
+                <div class="stat-value">{{ verified_users }}</div>
+                <div class="stat-foot">Пользователи, которые подтвердили email.</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-head">
+                    <div class="stat-label">Забанены</div>
+                    <div class="stat-icon">⛔</div>
+                </div>
+                <div class="stat-value">{{ banned_users }}</div>
+                <div class="stat-foot">Аккаунты, которые сейчас заблокированы.</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-head">
+                    <div class="stat-label">Администраторы</div>
+                    <div class="stat-icon">🛡️</div>
+                </div>
+                <div class="stat-value">{{ admins_count }}</div>
+                <div class="stat-foot">Пользователи с правами администратора.</div>
+            </div>
+        </div>
+
+        <div class="panels">
+            <section class="panel" id="users">
+                <div class="panel-head">
+                    <div>
+                        <h2>Пользователи</h2>
+                        <p>Поиск, бан/разбан и назначение админки прямо отсюда.</p>
+                    </div>
+
+                    <div class="search-box">
+                        <span class="icon">⌕</span>
+                        <input id="userSearch" type="text" placeholder="Поиск по имени или email..." />
+                    </div>
+                </div>
+
+                <div class="glow-line"></div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Пользователь</th>
+                                <th>Email</th>
+                                <th>Verified</th>
+                                <th>Admin</th>
+                                <th>Banned</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            {% for u in users %}
+                            <tr class="user-row">
+                                <td>{{ u.id }}</td>
+                                <td>
+                                    <div class="user-main">
+                                        <strong>{{ u.username }}</strong>
+                                        <span>@{{ u.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ u.email }}</td>
+                                <td>
+                                    {% if u.is_verified %}
+                                    <span class="badge ok">verified</span>
+                                    {% else %}
+                                    <span class="badge bad">not verified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if u.is_admin %}
+                                    <span class="badge admin">admin</span>
+                                    {% else %}
+                                    <span class="badge neutral">user</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if u.is_banned %}
+                                    <span class="badge bad">banned</span>
+                                    {% else %}
+                                    <span class="badge ok">active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <form method="post" action="/admin/toggle-ban/{{ u.id }}">
+                                            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
+                                            <button class="mini-btn {% if u.is_banned %}unban{% else %}ban{% endif %}"
+                                                type="submit">
+                                                {% if u.is_banned %}Разбанить{% else %}Забанить{% endif %}
+                                            </button>
+                                        </form>
+
+                                        <form method="post" action="/admin/toggle-admin/{{ u.id }}">
+                                            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
+                                            <button class="mini-btn admin" type="submit">
+                                                {% if u.is_admin %}Снять админа{% else %}Сделать админом{% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div id="emptyUsers" class="empty">Ничего не найдено по этому запросу.</div>
+                </div>
+            </section>
+
+            <div class="side-stack">
+                <section class="info-card" id="moderation">
+                    <h3>Модерация</h3>
+                    <p>
+                        Здесь можно быстро управлять доступом пользователей и держать систему в чистоте.
+                        Для такой панели обычно добавляют ещё журнал действий, список заказов, товары, отзывы и
+                        уведомления.
+                    </p>
+
+                    <div class="list">
+                        <div class="list-item">
+                            <span>Блокировки</span>
+                            <strong>Бан / Разбан</strong>
+                        </div>
+                        <div class="list-item">
+                            <span>Роли</span>
+                            <strong>Admin / User</strong>
+                        </div>
+                        <div class="list-item">
+                            <span>Безопасность</span>
+                            <strong>Только через БД</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-card" id="tools">
+                    <h3>Инструменты</h3>
+                    <p>
+                        Можно добавить сюда управление заказами, товарами, промокодами, рассылкой,
+                        отчётами, логами входа и ручной проверкой новых аккаунтов.
+                    </p>
+
+                    <div class="list">
+                        <div class="list-item">
+                            <span>Заказы</span>
+                            <strong>0 / 24h</strong>
+                        </div>
+                        <div class="list-item">
+                            <span>Пользователи онлайн</span>
+                            <strong>Realtime</strong>
+                        </div>
+                        <div class="list-item">
+                            <span>Статус сервера</span>
+                            <strong>Healthy</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="footer-note">
+                    Админка защищена серверной проверкой. Даже если вручную открыть URL, доступ получит только
+                    пользователь с <b>is_admin = 1</b> из базы данных.
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const searchInput = document.getElementById('userSearch');
+        const rows = Array.from(document.querySelectorAll('.user-row'));
+        const emptyUsers = document.getElementById('emptyUsers');
+
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            let visible = 0;
+
+            rows.forEach((row) => {
+                const text = row.innerText.toLowerCase();
+                const match = text.includes(q);
+                row.style.display = match ? '' : 'none';
+                if (match) visible += 1;
+            });
+
+            emptyUsers.style.display = visible ? 'none' : 'block';
+        });
+    </script>
+
+</body>
+
+</html>

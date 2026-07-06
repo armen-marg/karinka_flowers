@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Подтверждение почты — Karinka Flowers</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Raleway:wght@200;300;400;500&display=swap"
         rel="stylesheet" />
@@ -533,6 +534,7 @@
         {% endif %}
 
         <form id="verify-form" action="/verify-email" method="post" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
             <input type="hidden" name="email" value="{{ email }}">
             <input type="hidden" name="code" id="code-value">
 
@@ -563,6 +565,7 @@
     </section>
 
     <form id="resend-form" action="/verify-email/resend" method="post" style="display:none">
+        <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token') }}">
         <input type="hidden" name="email" value="{{ email }}">
     </form>
 
